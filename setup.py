@@ -1,11 +1,16 @@
 import setuptools
+import os
 
-with open("README.md", "r") as fh:
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, "README.md"), "r") as fh:
     long_description = fh.read()
+
+with open(os.path.join(here, "sparknlp_display/VERSION"), "r") as fh:
+    app_version = fh.read().strip()
 
 setuptools.setup(
     name="spark-nlp-display", # Replace with your own username
-    version="0.0.1",
+    version=app_version,
     author="John Snow Labs",
     author_email="john@johnsnowlabs.com",
     description="Visualization package for Spark NLP",
@@ -20,4 +25,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=2.7',
+    include_package_data=True,
+    install_requires=[
+        'spark-nlp',
+        'ipython',
+    ]
 )

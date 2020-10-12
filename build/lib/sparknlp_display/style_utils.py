@@ -87,8 +87,8 @@ STYLE_CONFIG_OLD = f"""
 </style>
 """
 
-style_path = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(style_path, 'style.css'), 'r', encoding='utf-8') as f:
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, 'style.css'), 'r', encoding='utf-8') as f:
     STYLE_CONFIG_NEW = f.read()
 STYLE_CONFIG = STYLE_CONFIG_OLD + '<style>{}</style>'.format(STYLE_CONFIG_NEW)
 

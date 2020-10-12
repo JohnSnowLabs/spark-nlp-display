@@ -1,0 +1,2 @@
+recursive-include sparknlp_display/*
+include sparknlp_display/VERSION

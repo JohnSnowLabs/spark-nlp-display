@@ -1,17 +1,14 @@
 import random
-import base64
-import pandas as pd
-import numpy as np
 import os
 import json
 from . import style_utils as style_config
 from IPython.display import display, HTML
 
-this_path = os.path.abspath(os.path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
 class NerOutput:
     def __init__(self):
-        with open(os.path.join(this_path, 'label_colors.json'), 'r', encoding='utf-8') as f_:
+        with open(os.path.join(here, 'label_colors.json'), 'r', encoding='utf-8') as f_:
             self.label_colors = json.load(f_)
 
     #public function to get color for a label
