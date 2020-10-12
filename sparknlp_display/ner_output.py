@@ -31,8 +31,9 @@ class NerOutput:
             return '#%02X%02X%02X' % (r(), r(), r())
 
     # set label color manually
-    def setLabelColor(self, label, color):
-        self.label_colors[label.lower()] = color
+    def setLabelColor(self, color_dict):
+        for key, value in color_dict.items():
+          self.label_colors[key.lower()] = value
         return self
   
     # main display function
