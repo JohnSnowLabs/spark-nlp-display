@@ -1,5 +1,6 @@
 import os
 from sparknlp_display.ner_output import NerOutput
+from sparknlp_display.dependency_parser import DependencyParserOutput
 
 here = os.path.abspath(os.path.dirname(__file__))
 

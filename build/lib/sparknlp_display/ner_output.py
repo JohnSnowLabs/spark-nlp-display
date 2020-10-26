@@ -8,7 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 class NerOutput:
     def __init__(self):
-        with open(os.path.join(here, 'label_colors.json'), 'r', encoding='utf-8') as f_:
+        with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
             self.label_colors = json.load(f_)
 
     #public function to get color for a label
@@ -49,42 +49,69 @@ class NerOutput:
 
         for key, value in color_dict.items():
           self.label_colors[key.lower()] = value
-        return self
-    
-    def __verfiyInput(self, input_result, original_text):
+        return self      
+
+    def __verifyStructure(self, result, label_col, document_col, original_text):
+
+        if original_text is None:
+            basic_msg_1 = """Incorrect annotation structure of '{}'.""".format(document_col)
+            if not hasattr(result[document_col][0], 'result'):
+                raise AttributeError(basic_msg_1+""" 'result' attribute not found in the annotation. 
+                Make sure '"""+document_col+"""' is a list of objects having the following structure: 
+                    Annotation(type='annotation', begin=0, end=10, result='This is a text')
+                Or You can pass the text manually using 'raw_text' argument.""")
+
+        basic_msg_1 = """Incorrect annotation structure of '{}'.""".format(label_col)
         basic_msg = """
         In sparknlp please use 'LightPipeline.fullAnnotate' for LightPipeline or 'Pipeline.transform' for PipelineModel.
         Or 
-        Make sure the result is a list of objects having the following structure: 
+        Make sure '"""+label_col+"""' is a list of objects having the following structure: 
             Annotation(type='annotation', begin=0, end=0, result='Adam', metadata={'entity': 'PERSON'})"""
-        if not isinstance(original_text, str):
-            raise ValueError("Invalid text input. Text should be of type str.")
-        if not isinstance(input_result, list):
-            raise ValueError("Invalid annotation result. Result should a list of objects."+basic_msg)
-        
 
-        for entity in input_result:
+        for entity in result[label_col]:
             if not hasattr(entity, 'begin'):
-                raise AttributeError("Incorrect annotation structure. 'begin' attribute not found in the annotation."+basic_msg)
+                raise AttributeError( basic_msg_1 + """ 'begin' attribute not found in the annotation."""+basic_msg)
             if not hasattr(entity, 'end'):
-                raise AttributeError("Incorrect annotation structure. 'end' attribute not found in the annotation."+basic_msg)
+                raise AttributeError(basic_msg_1 + """ 'end' attribute not found in the annotation."""+basic_msg)
             if not hasattr(entity, 'result'):
-                raise AttributeError("Incorrect annotation structure. 'result' attribute not found in the annotation."+basic_msg)
+                raise AttributeError(basic_msg_1 + """ 'result' attribute not found in the annotation."""+basic_msg)
             if not hasattr(entity, 'metadata'):
-                raise AttributeError("Incorrect annotation structure. 'metadata' attribute not found in the annotation."+basic_msg)
+                raise AttributeError(basic_msg_1 + """ 'metadata' attribute not found in the annotation."""+basic_msg)
             if 'entity' not in entity.metadata:
-                raise AttributeError("Incorrect annotation structure. KeyError 'entity' not found in metadata."+basic_msg)
+                raise AttributeError(basic_msg_1+""" KeyError: 'entity' not found in metadata."""+basic_msg)
+
+    def __verifyInput(self, result, label_col, document_col, original_text):
+        # check if label colum in result
+        if label_col not in result:
+            raise AttributeError("""column/key '{}' not found in the provided dataframe/dictionary.
+            Please specify the correct key/column using 'label_col' argument.""".format(label_col))
+        
+        if original_text is not None:
+            # check if provided text is correct data type
+            if not isinstance(original_text, str):
+                raise ValueError("Invalid value for argument 'raw_text' input. Text should be of type 'str'.")
+        
+        else:
+            # check if document column in result
+            if document_col not in result:
+                raise AttributeError("""column/key '{}' not found in the provided dataframe/dictionary.
+                Please specify the correct key/column using 'document_col' argument.
+                Or You can pass the text manually using 'raw_text' argument""".format(document_col))
+
+        self.__verifyStructure( result, label_col, document_col, original_text)
 
     # main display function
-    def __displayNer(self, fully_annotated_text, original_text, labels_list = None):
-        self.__verfiyInput(fully_annotated_text, original_text)
+    def __displayNer(self, result, label_col, document_col, original_text, labels_list = None):
+
+        if original_text is None:
+            original_text = result[document_col][0].result
 
         if labels_list is not None:
             labels_list = [v.lower() for v in labels_list]
         label_color = {}
         html_output = ""
         pos = 0
-        for entity in fully_annotated_text:
+        for entity in result[label_col]:
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
                 label_color[entity_type] = self.__getLabel(entity_type)
@@ -108,19 +135,28 @@ class NerOutput:
             html_output += '<span class="others" style="background-color: white">{}</span>'.format(original_text[pos:])
 
         html_output += """</div>"""
+
+        html_output = html_output.replace("\n", "<br>")
+
         return html_output
 
-    def display(self, result, original_text, labels_list=None):
+    def display(self, result, label_col, document_col='document', raw_text=None, labels=None):
         """Displays NER visualization. 
 
         Inputs:
-        result -- A list of objects containig annotations.
-        original_text -- Original Text
+        result -- A Dataframe or dictionary.
+        label_col -- Name of the column/key containing NER annotations.
+        document_col -- Name of the column/key containing text document.
+        original_text -- Original text of type 'str'. If specified, it will take precedence over 'document_col' and will be used as the reference text for display.
         labels_list -- A list of labels that should be highlighted in the output. Default: Display all labels.
 
         Output: Visualization
         """
-        html_content = self.__displayNer(result, original_text, labels_list)
-        html_content = html_content.replace("\n", "<br>")
+        
+        self.__verifyInput(result, label_col, document_col, raw_text)
+        
+        html_content = self.__displayNer(result, label_col, document_col, raw_text, labels)
         
         return display(HTML(style_config.STYLE_CONFIG+ " "+html_content))
+
+

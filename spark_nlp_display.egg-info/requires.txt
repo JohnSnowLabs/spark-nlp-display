@@ -1,2 +1,5 @@
 spark-nlp
 ipython
+svgwrite
+pandas
+numpy

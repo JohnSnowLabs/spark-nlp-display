@@ -29,5 +29,8 @@ setuptools.setup(
     install_requires=[
         'spark-nlp',
         'ipython',
+        'svgwrite',
+        'pandas',
+        'numpy'
     ]
 )
