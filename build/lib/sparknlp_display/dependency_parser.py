@@ -3,6 +3,7 @@ import os
 import json
 import pandas as pd
 import numpy as np
+import svgwrite
 from . import style_utils as style_config
 from IPython.display import display, HTML
 
@@ -187,7 +188,7 @@ class DependencyParserOutput:
           dwg.add(dwg.text(mp[0], insert=(mp[1], mp[2]-y_f), fill=colors_dict[mp[0]]))
 
         for ml in main_lines:
-          draw_line(dwg, ml[1], ml[2]-y_f, ml[3], ml[4]-y_f, ml[5], colors_dict[ml[5]])
+          self.__draw_line(dwg, ml[1], ml[2]-y_f, ml[3], ml[4]-y_f, ml[5], colors_dict[ml[5]])
         
         return dwg.tostring()
 
