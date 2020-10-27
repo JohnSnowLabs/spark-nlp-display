@@ -1,0 +1,21 @@
+{
+    "overlap" : "lightsalmon",
+    "before" : "deepskyblue",
+    "after" : "springgreen",
+    
+    "trip": "lightsalmon",
+    "trwp": "deepskyblue",
+    "trcp": "springgreen",
+    "trap": "gold",
+    "trnap": "maroon",
+    "terp": "purple",
+    "tecp": "tomato",
+    "pip" : "slategray",
+    
+    "drug-strength" : "purple",
+    "drug-frequency": "slategray",
+    "drug-form" : "deepskyblue",
+    "dosage-drug" : "springgreen",
+    "strength-drug": "maroon",
+    "drug-dosage" : "gold"
+}

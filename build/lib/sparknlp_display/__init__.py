@@ -1,6 +1,7 @@
 import os
 from sparknlp_display.ner_output import NerOutput
 from sparknlp_display.dependency_parser import DependencyParserOutput
+from sparknlp_display.relation_extraction import RelationExtractionOutput
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,3 +12,6 @@ def get_version():
         return app_version
 
 __version__ = get_version()
+
+def version():
+    return get_version()

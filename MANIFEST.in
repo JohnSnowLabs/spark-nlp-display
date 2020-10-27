@@ -1,2 +1,3 @@
 recursive-include sparknlp_display/*
+include sparknlp_display/label_colors/*
 include sparknlp_display/VERSION

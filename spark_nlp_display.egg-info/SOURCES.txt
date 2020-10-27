@@ -14,10 +14,13 @@ spark_nlp_display.egg-info/top_level.txt
 sparknlp_display/VERSION
 sparknlp_display/__init__.py
 sparknlp_display/dependency_parser.py
+sparknlp_display/entity_resolution.py
 sparknlp_display/ner_output.py
+sparknlp_display/relation_extraction.py
 sparknlp_display/style.css
 sparknlp_display/style_utils.py
 sparknlp_display/__pycache__/__init__.cpython-36.pyc
 sparknlp_display/__pycache__/ner_output.cpython-36.pyc
 sparknlp_display/__pycache__/style_utils.cpython-36.pyc
 sparknlp_display/label_colors/ner.json
+sparknlp_display/label_colors/relations.json
