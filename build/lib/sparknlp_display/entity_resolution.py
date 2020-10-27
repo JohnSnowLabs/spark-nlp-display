@@ -6,7 +6,7 @@ from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-class NerOutput:
+class EntityResolverOutput:
     def __init__(self):
         with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
             self.label_colors = json.load(f_)
@@ -101,7 +101,7 @@ class NerOutput:
         self.__verifyStructure( result, label_col, document_col, original_text)
 
     # main display function
-    def __displayNer(self, result, label_col, document_col, original_text, labels_list = None):
+    def __displayNer(self, result, label_col, resolution_col, document_col, original_text, labels_list = None):
 
         if original_text is None:
             original_text = result[document_col][0].result
@@ -111,7 +111,7 @@ class NerOutput:
         label_color = {}
         html_output = ""
         pos = 0
-        for entity in result[label_col]:
+        for entity, resol in zip(result[label_col], result[resolution_col]):
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
                 label_color[entity_type] = self.__getLabel(entity_type)
@@ -124,10 +124,13 @@ class NerOutput:
             pos = end+1
 
             if entity_type in label_color:
-                html_output += '<span class="entity-wrapper" style="background-color: {}"><span class="entity-name">{} </span><span class="entity-type">{}</span></span>'.format(
+                html_output += '<span class="entity-wrapper" style="background-color: {}"><span class="entity-name">{} </span><span class="entity-type">{}</span><span class="entity-name" style="background-color: {}">{} </span><span class="entity-name" style="background-color: {}">{}</span></span>'.format(
                     label_color[entity_type],
                     entity.result,
-                    entity.metadata['entity'])
+                    entity.metadata['entity'],
+                    '#D2C8C6' , resol.result,
+                    '#DDD2D0', resol.metadata['resolved_text'])
+
             else:
                 html_output += '<span class="others" style="background-color: white">{}</span>'.format(entity.result)
 
@@ -140,8 +143,7 @@ class NerOutput:
 
         return html_output
 
-
-    def display(self, result, label_col, document_col='document', raw_text=None, labels=None):
+    def display(self, result, label_col, resolution_col, document_col='document', raw_text=None):
         """Displays NER visualization. 
 
         Inputs:
@@ -154,10 +156,8 @@ class NerOutput:
         Output: Visualization
         """
         
-        self.__verifyInput(result, label_col, document_col, raw_text)
+        #self.__verifyInput(result, label_col, document_col, raw_text)
         
-        html_content = self.__displayNer(result, label_col, document_col, raw_text, labels)
+        html_content = self.__displayNer(result, label_col, resolution_col, document_col, raw_text)
         
         return display(HTML(style_config.STYLE_CONFIG+ " "+html_content))
-
-
