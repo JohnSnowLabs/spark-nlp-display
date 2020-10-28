@@ -6,7 +6,7 @@ from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-class EntityResolverOutput:
+class EntityResolverVisualizer:
     def __init__(self):
         with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
             self.label_colors = json.load(f_)

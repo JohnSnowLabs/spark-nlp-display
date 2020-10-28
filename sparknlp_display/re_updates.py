@@ -11,8 +11,27 @@ here = os.path.abspath(os.path.dirname(__file__))
 class RelationExtractionVisualizer:
 
     def __init__(self):
-        with open(os.path.join(here, 'label_colors/relations.json'), 'r', encoding='utf-8') as f_:
-            self.color_dict = json.load(f_)
+        self.color_dict = {
+                            "overlap" : "lightsalmon",
+                            "before" : "deepskyblue",
+                            "after" : "springgreen",
+                            
+                            "trip": "lightsalmon",
+                            "trwp": "deepskyblue",
+                            "trcp": "springgreen",
+                            "trap": "gold",
+                            "trnap": "maroon",
+                            "terp": "purple",
+                            "tecp": "tomato",
+                            "pip" : "slategray",
+                            
+                            "drug-strength" : "purple",
+                            "drug-frequency": "slategray",
+                            "drug-form" : "deepskyblue",
+                            "dosage-drug" : "springgreen",
+                            "strength-drug": "maroon",
+                            "drug-dosage" : "gold"
+                        }
             
     def __get_color(self, l):
         r = lambda: random.randint(100,255)
@@ -22,6 +41,40 @@ class RelationExtractionVisualizer:
         return ((len(text)+1)*9.7)-5
 
     def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color, show_relations):
+        def draw_pointer(dwg, s_x, s_y, e_x, e_y):
+            size = 8
+            ratio = 2
+            fullness1 = 2
+            fullness2 = 3
+            bx = e_x
+            ax = s_x
+            by = e_y
+            ay = s_y
+            abx = bx - ax
+            aby = by - ay
+            ab = np.sqrt(abx * abx + aby * aby)
+
+            cx = bx - size * abx / ab
+            cy = by - size * aby / ab
+            dx = cx + (by - cy) / ratio
+            dy = cy + (cx - bx) / ratio
+            ex = cx - (by - cy) / ratio
+            ey = cy - (cx - bx) / ratio
+            fx = (fullness1 * cx + bx) / fullness2
+            fy = (fullness1 * cy + by) / fullness2
+
+            text_place_y = s_y-(abs(s_y-e_y)/2)
+            line = dwg.add(dwg.polyline(
+                      [(ax, ay),
+                      (bx, by),    
+                      (dx, dy),
+                      (fx, fy),
+                      (ex, ey),
+                      (bx, by)
+                      ],
+                      stroke=color, stroke_width = "2", fill='none',))
+            return text_place_y
+
         if s_x > e_x:
             #s_x -= 5
             e_x += 10
@@ -44,29 +97,11 @@ class RelationExtractionVisualizer:
         elif s_y >= e_y:
             e_y +=30
             s_y-=20
-            text_place_y = s_y-(abs(s_y-e_y)/2)
-            line = dwg.add(dwg.polyline(
-                    [(s_x, s_y),(s_x, s_y-10), (e_x, e_y+10),
-                    (e_x, e_y),    
-                    (e_x+2, e_y),
-                    (e_x, e_y-4),
-                    (e_x-2, e_y),
-                    (e_x, e_y)
-                    ],
-                    stroke=color, stroke_width = "2", fill='none',))
+            text_place_y = draw_pointer(dwg, s_x, s_y, e_x, e_y)
         else:
             s_y-=5
             e_y -= 40
-            text_place_y = s_y+(abs(s_y-e_y)/2)
-            line = dwg.add(dwg.polyline(
-                    [(s_x, s_y),
-                    (e_x, e_y-40),    
-                    (e_x+2, e_y),
-                    (e_x, e_y+4),
-                    (e_x-2, e_y),
-                    (e_x, e_y)
-                    ],
-                    stroke=color, stroke_width = "2", fill='none',))
+            text_place_y = draw_pointer(dwg, s_x, s_y, e_x, e_y)
         if show_relations:
             dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(self.__size(d_type)/2.75), text_place_y), 
             fill=color, font_size='12', font_family='courier'))
@@ -128,14 +163,15 @@ class RelationExtractionVisualizer:
             #chunk1
             dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
             #rectange chunk 1
-            dwg.add(dwg.rect(insert=(start_x-3, start_y-18), size=(this_size,25), stroke='orange', 
+            dwg.add(dwg.rect(insert=(start_x-3, start_y-18), size=(this_size,25), 
+            rx=2, ry=2, stroke='orange', 
             stroke_width='2', fill='none'))
             #entity 1
             central_point_x = start_x+(this_size/2)
             
             dwg.add(dwg.text(e_entity_now, 
                             insert=(central_point_x-(self.__size(e_entity_now)/2.75), start_y+20), 
-                            fill='mediumseagreen', font_size='12', font_family='courier'))
+                            fill='slateblue', font_size='12', font_family='courier'))
             
             all_done[int(e_start_now)] = [central_point_x, start_y]
             start_x += this_size + 10
