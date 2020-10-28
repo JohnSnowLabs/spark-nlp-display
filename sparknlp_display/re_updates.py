@@ -41,6 +41,52 @@ class RelationExtractionVisualizer:
         return ((len(text)+1)*9.7)-5
 
     def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color, show_relations):
+        # find the a & b points
+        def get_bezier_coef(points):
+            # since the formulas work given that we have n+1 points
+            # then n must be this:
+            n = len(points) - 1
+
+            # build coefficents matrix
+            C = 4 * np.identity(n)
+            np.fill_diagonal(C[1:], 1)
+            np.fill_diagonal(C[:, 1:], 1)
+            C[0, 0] = 2
+            C[n - 1, n - 1] = 7
+            C[n - 1, n - 2] = 2
+
+            # build points vector
+            P = [2 * (2 * points[i] + points[i + 1]) for i in range(n)]
+            P[0] = points[0] + 2 * points[1]
+            P[n - 1] = 8 * points[n - 1] + points[n]
+
+            # solve system, find a & b
+            A = np.linalg.solve(C, P)
+            B = [0] * n
+            for i in range(n - 1):
+                B[i] = 2 * points[i + 1] - A[i + 1]
+            B[n - 1] = (A[n - 1] + points[n]) / 2
+
+            return A, B
+
+        # returns the general Bezier cubic formula given 4 control points
+        def get_cubic(a, b, c, d):
+            return lambda t: np.power(1 - t, 3) * a + 3 * np.power(1 - t, 2) * t * b + 3 * (1 - t) * np.power(t, 2) * c + np.power(t, 3) * d
+
+        # return one cubic curve for each consecutive points
+        def get_bezier_cubic(points):
+            A, B = get_bezier_coef(points)
+            return [
+                get_cubic(points[i], A[i], B[i], points[i + 1])
+                for i in range(len(points) - 1)
+            ]
+
+        # evalute each cubic curve on the range [0, 1] sliced in n points
+        def evaluate_bezier(points, n):
+            curves = get_bezier_cubic(points)
+            return np.array([fun(t) for fun in curves for t in np.linspace(0, 1, n)])
+
+
         def draw_pointer(dwg, s_x, s_y, e_x, e_y):
             size = 8
             ratio = 2
@@ -65,7 +111,7 @@ class RelationExtractionVisualizer:
 
             text_place_y = s_y-(abs(s_y-e_y)/2)
             line = dwg.add(dwg.polyline(
-                      [(ax, ay),
+                      [
                       (bx, by),    
                       (dx, dy),
                       (fx, fy),
@@ -80,27 +126,31 @@ class RelationExtractionVisualizer:
             e_x += 10
         else:
             #s_x += 5
-            e_x -= 10
+            e_x -= 2
         if s_y == e_y:
             s_y -= 20
             e_y = s_y-4#55
             text_place_y = s_y-45
-            line = dwg.add(dwg.polyline(
-                [(s_x, s_y), (s_x, s_y-10), ((s_x+e_x)/2, s_y-40), (e_x, s_y-10),
-                (e_x, e_y),    
-                (e_x+2, e_y),
-                (e_x, e_y+4),
-                (e_x-2, e_y),
-                (e_x, e_y)
-                ],
+
+            pth = evaluate_bezier(np.array([[s_x, s_y], 
+                                [(s_x+e_x)/2.0, s_y-40],
+                                [e_x,e_y]]), 50)
+            dwg.add(dwg.polyline(pth,
                 stroke=color, stroke_width = "2", fill='none',))
+            
+            draw_pointer(dwg, (s_x+e_x)/2.0, s_y-50, e_x, e_y)
+
         elif s_y >= e_y:
-            e_y +=30
+            e_y +=15
             s_y-=20
+            dwg.add(dwg.polyline([(s_x,s_y), (e_x, e_y)],
+                stroke=color, stroke_width = "2", fill='none',))
             text_place_y = draw_pointer(dwg, s_x, s_y, e_x, e_y)
         else:
             s_y-=5
             e_y -= 40
+            dwg.add(dwg.polyline([(s_x,s_y), (e_x, e_y)],
+                stroke=color, stroke_width = "2", fill='none',))
             text_place_y = draw_pointer(dwg, s_x, s_y, e_x, e_y)
         if show_relations:
             dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(self.__size(d_type)/2.75), text_place_y), 
@@ -173,7 +223,7 @@ class RelationExtractionVisualizer:
                             insert=(central_point_x-(self.__size(e_entity_now)/2.75), start_y+20), 
                             fill='slateblue', font_size='12', font_family='courier'))
             
-            all_done[int(e_start_now)] = [central_point_x, start_y]
+            all_done[int(e_start_now)] = [central_point_x-(self.__size(e_entity_now)/2.75), start_y]
             start_x += this_size + 10
             this_line += 1 
               
