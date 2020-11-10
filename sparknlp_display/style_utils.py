@@ -30,7 +30,7 @@ STYLE_CONFIG_ENTITIES = f"""
         
     }}
     .spark-nlp-display-entity-name{{
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         font-family: 'Montserrat', sans-serif !important;
         
@@ -61,7 +61,7 @@ STYLE_CONFIG_ENTITIES = f"""
     }}
     
     .spark-nlp-display-others{{
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         font-family: 'Montserrat', sans-serif !important;
         
