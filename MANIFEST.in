@@ -1,3 +1,5 @@
 recursive-include sparknlp_display/*
+include sparknlp_display/style.css
+include sparknlp_display/style_utils.py
 include sparknlp_display/label_colors/*
 include sparknlp_display/VERSION

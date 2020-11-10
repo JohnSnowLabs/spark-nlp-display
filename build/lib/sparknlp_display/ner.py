@@ -6,13 +6,13 @@ from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-class NerOutput:
+class NerVisualizer:
     def __init__(self):
         with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
             self.label_colors = json.load(f_)
 
     #public function to get color for a label
-    def getLabelColor(self, label):
+    def get_label_color(self, label):
         """Returns color of a particular label
         
         Input: entity label <string>
@@ -25,12 +25,11 @@ class NerOutput:
             return None
 
     # private function for colors for display
-    def __getLabel(self, label):
-        """Set label colors.
+    def __get_label(self, label):
+        """Internal function to generate random color codes for missing colors
         
         Input: dictionary of entity labels and corresponding colors
-        Output: self object - to allow chaining
-        Note: Previous values of colors will be overwritten
+        Output: color code (Hex)
         """
         if str(label).lower() in self.label_colors:
             return self.label_colors[label.lower()]
@@ -39,19 +38,18 @@ class NerOutput:
             r = lambda: random.randint(100,255)
             return '#%02X%02X%02X' % (r(), r(), r())
 
-    def setLabelColors(self, color_dict):
+    def set_label_colors(self, color_dict):
         """Sets label colors.
-
         input: dictionary of entity labels and corresponding colors
         output: self object - to allow chaining
         note: Previous values of colors will be overwritten
         """
-
+        
         for key, value in color_dict.items():
-          self.label_colors[key.lower()] = value
+            self.label_colors[key.lower()] = value
         return self      
 
-    def __verifyStructure(self, result, label_col, document_col, original_text):
+    def __verify_structure(self, result, label_col, document_col, original_text):
 
         if original_text is None:
             basic_msg_1 = """Incorrect annotation structure of '{}'.""".format(document_col)
@@ -80,7 +78,7 @@ class NerOutput:
             if 'entity' not in entity.metadata:
                 raise AttributeError(basic_msg_1+""" KeyError: 'entity' not found in metadata."""+basic_msg)
 
-    def __verifyInput(self, result, label_col, document_col, original_text):
+    def __verify_input(self, result, label_col, document_col, original_text):
         # check if label colum in result
         if label_col not in result:
             raise AttributeError("""column/key '{}' not found in the provided dataframe/dictionary.
@@ -98,10 +96,10 @@ class NerOutput:
                 Please specify the correct key/column using 'document_col' argument.
                 Or You can pass the text manually using 'raw_text' argument""".format(document_col))
 
-        self.__verifyStructure( result, label_col, document_col, original_text)
+        self.__verify_structure( result, label_col, document_col, original_text)
 
     # main display function
-    def __displayNer(self, result, label_col, document_col, original_text, labels_list = None):
+    def __display_ner(self, result, label_col, document_col, original_text, labels_list = None):
 
         if original_text is None:
             original_text = result[document_col][0].result
@@ -114,25 +112,25 @@ class NerOutput:
         for entity in result[label_col]:
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
-                label_color[entity_type] = self.__getLabel(entity_type)
+                label_color[entity_type] = self.__get_label(entity_type)
 
             begin = int(entity.begin)
             end = int(entity.end)
             if pos < begin and pos < len(original_text):
                 white_text = original_text[pos:begin]
-                html_output += '<span class="others" style="background-color: white">{}</span>'.format(white_text)
+                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(white_text)
             pos = end+1
 
             if entity_type in label_color:
-                html_output += '<span class="entity-wrapper" style="background-color: {}"><span class="entity-name">{} </span><span class="entity-type">{}</span></span>'.format(
+                html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span></span>'.format(
                     label_color[entity_type],
                     entity.result,
                     entity.metadata['entity'])
             else:
-                html_output += '<span class="others" style="background-color: white">{}</span>'.format(entity.result)
+                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)
 
         if pos < len(original_text):
-            html_output += '<span class="others" style="background-color: white">{}</span>'.format(original_text[pos:])
+            html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(original_text[pos:])
 
         html_output += """</div>"""
 
@@ -142,21 +140,17 @@ class NerOutput:
 
     def display(self, result, label_col, document_col='document', raw_text=None, labels=None):
         """Displays NER visualization. 
-
         Inputs:
         result -- A Dataframe or dictionary.
         label_col -- Name of the column/key containing NER annotations.
         document_col -- Name of the column/key containing text document.
         original_text -- Original text of type 'str'. If specified, it will take precedence over 'document_col' and will be used as the reference text for display.
         labels_list -- A list of labels that should be highlighted in the output. Default: Display all labels.
-
         Output: Visualization
         """
         
-        self.__verifyInput(result, label_col, document_col, raw_text)
+        self.__verify_input(result, label_col, document_col, raw_text)
         
-        html_content = self.__displayNer(result, label_col, document_col, raw_text, labels)
+        html_content = self.__display_ner(result, label_col, document_col, raw_text, labels)
         
-        return display(HTML(style_config.STYLE_CONFIG+ " "+html_content))
-
-
+        return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
