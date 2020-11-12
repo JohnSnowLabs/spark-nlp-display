@@ -28,7 +28,7 @@ class RelationExtractionVisualizer:
     def __size(self, text):
         return ((len(text)+1)*9.7)-5
 
-    def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color, show_relations):
+    def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color, show_relations, size_of_entity_label):
         def get_bezier_coef(points):
             # since the formulas work given that we have n+1 points
             # then n must be this:
@@ -115,6 +115,9 @@ class RelationExtractionVisualizer:
             else:
                 s_x -= 10
                 x_o_diff_dict[unique_o_index] = 5
+            if s_y > e_y:
+                e_x += size_of_entity_label
+            
             if unique_i_index in x_i_diff_dict:
                 e_x += 5
             else:
@@ -126,6 +129,8 @@ class RelationExtractionVisualizer:
             else:
                 s_x += 10
                 x_o_diff_dict[unique_o_index] = 5
+            if s_y > e_y:
+                e_x -= size_of_entity_label
             if unique_i_index in x_i_diff_dict:
                 e_x -= 5
             else:
@@ -153,7 +158,7 @@ class RelationExtractionVisualizer:
                 stroke=color, stroke_width = "2", fill='none',))
             draw_pointer(dwg, (s_x+e_x)/2.0, s_y-50, e_x, e_y)
         elif s_y >= e_y:
-            e_y +=30
+            e_y +=15
             s_y-=20
             text_place_y = s_y-(abs(s_y-e_y)/2)
             
@@ -195,14 +200,15 @@ class RelationExtractionVisualizer:
             
         if show_relations:
             angle = math.degrees(math.atan((s_y-e_y)/(s_x-e_x)))
-            rect_x, rect_y = (((s_x+e_x)/2)-(self.__size(d_type)/2.75)-3, text_place_y-10)
-            rect_w, rect_h = (self.__size(d_type)/1.2,13)
+            rel_temp_size = self.__size(d_type)/1.35
+            rect_x, rect_y = (((s_x+e_x)/2.0)-(rel_temp_size/2.0)-3, text_place_y-10)
+            rect_w, rect_h = (rel_temp_size+3,13)
             dwg.add(dwg.rect(insert=(rect_x, rect_y), rx=2,ry=2, 
             size=(rect_w, rect_h), 
             fill='white', stroke=color , stroke_width='1', font_family='courier', 
             transform = f"rotate({angle} {rect_x+rect_w/2} {rect_y+rect_h/2})"))
 
-            dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(self.__size(d_type)/2.75), text_place_y), 
+            dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(rel_temp_size/2.0), text_place_y), 
             fill=color, font_size='12', font_family='courier',
             transform = f"rotate({angle} {rect_x+rect_w/2} {rect_y+rect_h/2})"))
 
@@ -269,12 +275,12 @@ class RelationExtractionVisualizer:
             dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
             #entity 1
             central_point_x = start_x+(this_size/2)
-            label_x_point = central_point_x-(self.__size(e_entity_now)/2.75)
+            temp_size = self.__size(e_entity_now)/2.75
             dwg.add(dwg.text(e_entity_now.upper(), 
-                            insert=(label_x_point, start_y+20), 
+                            insert=(central_point_x-temp_size, start_y+20), 
                             fill='mediumseagreen', font_size='12', font_family='courier'))
             
-            all_done[int(e_start_now)] = [central_point_x, start_y]
+            all_done[int(e_start_now)] = [central_point_x, start_y, temp_size]
             start_x += this_size + 20
             this_line += 1 
               
@@ -307,8 +313,9 @@ class RelationExtractionVisualizer:
         relation_coordinates = relation_coordinates[temp_ind]
         for row in relation_coordinates:
             #if int(row[0][1]) == int(row[1][1]):
+            size_of_entity_label = int(row[1][2])
             self.__draw_line(dwg, int(row[0][0]) , int(row[0][1]), int(row[1][0]), int(row[1][1]), 
-                            row[2],self.color_dict[row[2].lower().strip()], show_relations)
+                            row[2],self.color_dict[row[2].lower().strip()], show_relations, size_of_entity_label)
         
         return dwg.tostring()
 
