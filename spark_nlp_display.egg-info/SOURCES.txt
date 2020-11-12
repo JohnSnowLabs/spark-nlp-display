@@ -8,6 +8,7 @@ spark_nlp_display.egg-info/requires.txt
 spark_nlp_display.egg-info/top_level.txt
 sparknlp_display/VERSION
 sparknlp_display/__init__.py
+sparknlp_display/assertion.py
 sparknlp_display/dep_updates.py
 sparknlp_display/dependency_parser.py
 sparknlp_display/entity_resolution.py
