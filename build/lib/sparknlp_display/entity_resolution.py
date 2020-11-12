@@ -124,12 +124,15 @@ class EntityResolverVisualizer:
             pos = end+1
 
             if entity_type in label_color:
-                html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-name" style="background-color: {}">{} </span><span class="spark-nlp-display-entity-name" style="background-color: {}">{}</span></span>'.format(
-                    label_color[entity_type],
-                    entity.result,
-                    entity.metadata['entity'],
-                    '#D2C8C6' , resol.result,
-                    '#DDD2D0', resol.metadata['resolved_text'])
+                html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{}</span></span>'.format(
+                    label_color[entity_type] + 'B3', #color
+                    entity.result, #entity - chunk
+                    entity.metadata['entity'], #entity - label
+                    label_color[entity_type] + 'FF', #color '#D2C8C6' 
+                    resol.result, # res_code
+                    label_color[entity_type] + 'CC', # res_color '#DDD2D0'
+                    resol.metadata['resolved_text'] # res_text
+                )
 
             else:
                 html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)

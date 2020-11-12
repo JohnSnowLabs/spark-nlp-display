@@ -18,7 +18,9 @@ class RelationExtractionVisualizer:
     def __init__(self):
         with open(os.path.join(here, 'label_colors/relations.json'), 'r', encoding='utf-8') as f_:
             self.color_dict = json.load(f_)
-            
+        with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
+            self.entity_color_dict = json.load(f_)
+            self.entity_color_dict = dict((k.lower(), v) for k, v in self.entity_color_dict.items())
     def __get_color(self, l):
         r = lambda: random.randint(100,255)
         return '#%02X%02X%02X' % (r(), r(), r())
@@ -105,28 +107,30 @@ class RelationExtractionVisualizer:
                       ],
                       stroke=color, stroke_width = "2", fill='none',))
             return text_place_y
+        unique_o_index = str(s_x)+str(s_y)
+        unique_i_index = str(e_x)+str(e_y)
         if s_x > e_x:
-            if s_x in x_o_diff_dict:
-              x_o_diff_dict[s_x] -= 10
+            if unique_o_index in x_o_diff_dict:
+                s_x -= 5
             else:
-              x_o_diff_dict[s_x] = 10
-            if e_x in x_i_diff_dict:
-              x_i_diff_dict[e_x] += 10
+                s_x -= 10
+                x_o_diff_dict[unique_o_index] = 5
+            if unique_i_index in x_i_diff_dict:
+                e_x += 5
             else:
-              x_i_diff_dict[e_x] = 10
-            #s_x -= x_o_diff_dict[s_x]
-            #e_x += x_i_diff_dict[e_x]
+                e_x += 10
+                x_i_diff_dict[unique_i_index] = 5
         else:
-            if s_x in x_o_diff_dict:
-              x_o_diff_dict[s_x] += 10
+            if unique_o_index in x_o_diff_dict:
+                s_x += 5
             else:
-              x_o_diff_dict[s_x] = 10
-            if e_x in x_i_diff_dict:
-              x_i_diff_dict[e_x] -= 10
+                s_x += 10
+                x_o_diff_dict[unique_o_index] = 5
+            if unique_i_index in x_i_diff_dict:
+                e_x -= 5
             else:
-              x_i_diff_dict[e_x] = 10
-            #s_x += x_o_diff_dict[s_x]
-            #e_x -= x_i_diff_dict[e_x]
+                e_x -= 10
+                x_i_diff_dict[unique_i_index] = 5
         this_y_vals = list(range(min(s_x,e_x), max(s_x,e_x)+1))
         this_y_vals = [ str(s_y)+'|'+str(i) for i in this_y_vals]
         common = set(this_y_vals) & set(overlap_hist)
@@ -257,16 +261,17 @@ class RelationExtractionVisualizer:
                     start_y += y_offset
                     start_x = 10
                     this_line = 0
+                    
+            #rectange chunk 1
+            dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=3,ry=3, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
+            stroke_width='2', fill='none'))
             #chunk1
             dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
-            #rectange chunk 1
-            dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=3,ry=3, size=(this_size,25), stroke='orange', 
-            stroke_width='2', fill='none'))
             #entity 1
             central_point_x = start_x+(this_size/2)
-            
-            dwg.add(dwg.text(e_entity_now, 
-                            insert=(central_point_x-(self.__size(e_entity_now)/2.75), start_y+20), 
+            label_x_point = central_point_x-(self.__size(e_entity_now)/2.75)
+            dwg.add(dwg.text(e_entity_now.upper(), 
+                            insert=(label_x_point, start_y+20), 
                             fill='mediumseagreen', font_size='12', font_family='courier'))
             
             all_done[int(e_start_now)] = [central_point_x, start_y]
