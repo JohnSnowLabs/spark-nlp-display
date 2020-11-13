@@ -42,13 +42,14 @@ from sparknlp_display import NerVisualizer
 
 ner_vis = NerVisualizer()
 
-ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
-
 ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                     label_col='entities', #specify the entity column
                     document_col='document' #specify the document column (default: 'document')
                     labels=['PER'] #only allow these labels to be displayed. (default: [] - all labels will be displayed)
                     )
+
+## To set custom label colors:
+ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
 
 ```
 
@@ -59,13 +60,14 @@ from sparknlp_display import EntityResolverVisualizer
 
 er_vis = EntityResolverVisualizer()
 
-er_vis.set_label_colors({'TREATMENT':'#800080', 'PROBLEM':'#77b5fe'}) #set label colors by specifying hex codes
-
 er_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                label_col='entities', #specify the ner result column
                resolution_col = 'resolution'
                document_col='document' #specify the document column (default: 'document')
                )
+
+## To set custom label colors:
+er_vis.set_label_colors({'TREATMENT':'#800080', 'PROBLEM':'#77b5fe'}) #set label colors by specifying hex codes
 
 ```
 
@@ -90,13 +92,14 @@ from sparknlp_display import AssertionVisualizer
 
 assertion_vis = AssertionVisualizer()
 
-assertion_vis.set_label_colors({'TREATMENT':'#008080', 'problem':'#800080'}) #set label colors by specifying hex codes
-
 assertion_vis.display(pipeline_result[0], 
                       label_col = 'entities', #specify the ner result column
                       assertion_col = 'assertion' #specify assertion column
                       document_col = 'document' #specify the document column (default: 'document')
                       )
+                      
+## To set custom label colors:
+assertion_vis.set_label_colors({'TREATMENT':'#008080', 'problem':'#800080'}) #set label colors by specifying hex codes
 
 ```
 

@@ -16,6 +16,18 @@ Description: # spark-nlp-display
         - Relation Extraction
         - Assertion Status
         
+        ### Requirements
+        - spark-nlp
+        - ipython
+        - svgwrite
+        - pandas
+        - numpy
+        
+        ### Installation
+        ```bash
+        pip install spark-nlp-display
+        ```
+        
         ### How to use
         
         #### Dependency Parser
