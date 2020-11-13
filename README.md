@@ -9,6 +9,8 @@ A library for the simple visualization of different types of Spark NLP annotatio
 - Assertion Status
 
 ## Complete Tutorial
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/JohnSnowLabs/spark-nlp-display/blob/main/tutorials/Spark_NLP_Display.ipynb)
+
 https://github.com/JohnSnowLabs/spark-nlp-display/blob/main/tutorials/Spark_NLP_Display.ipynb
 
 ### Requirements
