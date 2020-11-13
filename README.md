@@ -8,6 +8,9 @@ A library for the simple visualization of different types of Spark NLP annotatio
 - Relation Extraction
 - Assertion Status
 
+## Complete Tutorial
+https://github.com/JohnSnowLabs/spark-nlp-display/blob/main/tutorials/Spark_NLP_Display.ipynb
+
 ### Requirements
 - spark-nlp
 - ipython
