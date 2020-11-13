@@ -1,5 +1,6 @@
 MANIFEST.in
 README.md
+setup.cfg
 setup.py
 spark_nlp_display.egg-info/PKG-INFO
 spark_nlp_display.egg-info/SOURCES.txt
