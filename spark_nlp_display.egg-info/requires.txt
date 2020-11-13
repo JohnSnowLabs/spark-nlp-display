@@ -1,5 +1,5 @@
 spark-nlp
 ipython
-svgwrite
+svgwrite==1.4
 pandas
 numpy
