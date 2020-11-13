@@ -9,7 +9,7 @@ with open(os.path.join(here, "sparknlp_display/VERSION"), "r") as fh:
     app_version = fh.read().strip()
 
 setuptools.setup(
-    name="spark-nlp-display", # Replace with your own username
+    name="spark-nlp-display",
     version=app_version,
     author="John Snow Labs",
     author_email="john@johnsnowlabs.com",
@@ -21,7 +21,7 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 2",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
     python_requires='>=2.7',
@@ -29,7 +29,7 @@ setuptools.setup(
     install_requires=[
         'spark-nlp',
         'ipython',
-        'svgwrite',
+        'svgwrite==1.4',
         'pandas',
         'numpy'
     ]
