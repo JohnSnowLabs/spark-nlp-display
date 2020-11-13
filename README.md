@@ -8,6 +8,18 @@ A library for the simple visualization of different types of Spark NLP annotatio
 - Relation Extraction
 - Assertion Status
 
+### Requirements
+- spark-nlp
+- ipython
+- svgwrite
+- pandas
+- numpy
+
+### Installation
+```bash
+pip install spark-nlp-display
+```
+
 ### How to use
 
 #### Dependency Parser
@@ -16,7 +28,7 @@ from sparknlp_display import DependencyParserVisualizer
 
 dependency_vis = DependencyParserVisualizer()
 
-dependency_vis.display(pipeline_result, #should be the results of a single example, not the complete dataframe.
+dependency_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe.
                        pos_col = 'pos', #specify the pos column
                        dependency_col = 'dependency', #specify the dependency column
                        dependency_type_col = 'dependency_type' #specify the dependency type column
@@ -32,7 +44,7 @@ ner_vis = NerVisualizer()
 
 ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
 
-ner_vis.display(pipeline_result, #should be the results of a single example, not the complete dataframe
+ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                     label_col='entities', #specify the entity column
                     document_col='document' #specify the document column (default: 'document')
                     labels=['PER'] #only allow these labels to be displayed. (default: [] - all labels will be displayed)
@@ -49,7 +61,7 @@ er_vis = EntityResolverVisualizer()
 
 er_vis.set_label_colors({'TREATMENT':'#800080', 'PROBLEM':'#77b5fe'}) #set label colors by specifying hex codes
 
-er_vis.display(pipeline_result, #should be the results of a single example, not the complete dataframe
+er_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                label_col='entities', #specify the ner result column
                resolution_col = 'resolution'
                document_col='document' #specify the document column (default: 'document')
@@ -64,7 +76,7 @@ from sparknlp_display import RelationExtractionVisualizer
 
 re_vis = RelationExtractionVisualizer()
 
-re_vis.display(pipeline_result, #should be the results of a single example, not the complete dataframe
+re_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                relation_col = 'relations', #specify relations column
                document_col = 'document', #specify document column
                show_relations=True #display relation names on arrows (default: True)
@@ -80,7 +92,7 @@ assertion_vis = AssertionVisualizer()
 
 assertion_vis.set_label_colors({'TREATMENT':'#008080', 'problem':'#800080'}) #set label colors by specifying hex codes
 
-assertion_vis.display(assertion_res[0], 
+assertion_vis.display(pipeline_result[0], 
                       label_col = 'entities', #specify the ner result column
                       assertion_col = 'assertion' #specify assertion column
                       document_col = 'document' #specify the document column (default: 'document')

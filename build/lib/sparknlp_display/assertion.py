@@ -145,7 +145,7 @@ class AssertionVisualizer:
         return html_output
 
     def display(self, result, label_col, assertion_col, document_col='document', raw_text=None):
-        """Displays NER visualization. 
+        """Displays Assertion visualization. 
 
         Inputs:
         result -- A Dataframe or dictionary.
