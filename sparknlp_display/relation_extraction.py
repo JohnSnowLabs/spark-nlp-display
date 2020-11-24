@@ -21,6 +21,8 @@ class RelationExtractionVisualizer:
         with open(os.path.join(here, 'label_colors/ner.json'), 'r', encoding='utf-8') as f_:
             self.entity_color_dict = json.load(f_)
             self.entity_color_dict = dict((k.lower(), v) for k, v in self.entity_color_dict.items())
+            self.font_path = os.path.join(here, 'fonts/Lucida_Console.ttf')
+            self.main_font = 'Lucida'
     def __get_color(self, l):
         r = lambda: random.randint(100,255)
         return '#%02X%02X%02X' % (r(), r(), r())
@@ -215,7 +217,7 @@ class RelationExtractionVisualizer:
             rect_w, rect_h = (rel_temp_size+3,13)
             dwg.add(dwg.rect(insert=(rect_x, rect_y), rx=2,ry=2, 
             size=(rect_w, rect_h), 
-            fill='white', stroke=color , stroke_width='1', font_family='Monaco', 
+            fill='white', stroke=color , stroke_width='1', 
             transform = f"rotate({angle} {rect_x+rect_w/2} {rect_y+rect_h/2})"))
 
             dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(rel_temp_size/2.0), text_place_y), 
@@ -270,7 +272,7 @@ class RelationExtractionVisualizer:
                     start_y += y_offset
                     start_x = 10
                     this_line = 0
-                dwg_texts.append([word_, (start_x, start_y ), '#546c74', '16', 'Monaco', 'font-weight:100'])
+                dwg_texts.append([word_, (start_x, start_y ), '#546c74', '16', self.main_font, 'font-weight:100'])
                 #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
                 #                 font_family='Monaco', style='font-weight:lighter'))
                 start_x += this_size + 10
@@ -286,13 +288,13 @@ class RelationExtractionVisualizer:
             #dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=2,ry=2, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
             #stroke_width='1', fill=self.entity_color_dict[e_entity_now.lower()], fill_opacity='0.2'))
             #chunk1
-            dwg_texts.append([e_chunk_now, (start_x, start_y ), '#546c74', '16', 'Monaco', 'font-weight:100'])
+            dwg_texts.append([e_chunk_now, (start_x, start_y ), '#546c74', '16', self.main_font, 'font-weight:100'])
             #dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
             #                 font_family='Monaco', style='font-weight:lighter'))
             #entity 1
             central_point_x = start_x+(this_size/2)
             temp_size = self.__size(e_entity_now)/2.75
-            dwg_texts.append([e_entity_now.upper(), (central_point_x-temp_size, start_y+20), '#1f77b7', '12', 'Monaco', 'font-weight:lighter'])
+            dwg_texts.append([e_entity_now.upper(), (central_point_x-temp_size, start_y+20), '#1f77b7', '12', self.main_font, 'font-weight:lighter'])
             #dwg.add(dwg.text(e_entity_now.upper(), 
             #                insert=(central_point_x-temp_size, start_y+20), 
             #                fill='#1f77b7', font_size='12', font_family='Monaco',
@@ -309,14 +311,14 @@ class RelationExtractionVisualizer:
             if (start_x + this_size)>= x_limit:
                 start_y += y_offset
                 start_x = 10
-            dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', 'Monaco', 'font-weight:100'])
+            dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', self.main_font, 'font-weight:100'])
             #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
             #                 font_family='Monaco', style='font-weight:lighter'))
             start_x += this_size
         
         
         dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, start_y+y_offset))
-        
+        dwg.embed_font(self.main_font, self.font_path)
         
         for crect_ in dwg_rects:
             dwg.add(dwg.rect(insert=crect_[0],rx=2,ry=2, size=crect_[1], stroke=crect_[2], 

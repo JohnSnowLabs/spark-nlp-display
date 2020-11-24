@@ -19,5 +19,6 @@ sparknlp_display/relation_extraction.py
 sparknlp_display/retemp.py
 sparknlp_display/style.css
 sparknlp_display/style_utils.py
+sparknlp_display/fonts/Lucida_Console.ttf
 sparknlp_display/label_colors/ner.json
 sparknlp_display/label_colors/relations.json
