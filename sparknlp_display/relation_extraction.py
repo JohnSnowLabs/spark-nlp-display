@@ -270,7 +270,7 @@ class RelationExtractionVisualizer:
                     start_y += y_offset
                     start_x = 10
                     this_line = 0
-                dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', 'Monaco', 'font-weight:lighter'])
+                dwg_texts.append([word_, (start_x, start_y ), '#546c74', '16', 'Monaco', 'font-weight:lighter'])
                 #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
                 #                 font_family='Monaco', style='font-weight:lighter'))
                 start_x += this_size + 10
@@ -286,7 +286,7 @@ class RelationExtractionVisualizer:
             #dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=2,ry=2, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
             #stroke_width='1', fill=self.entity_color_dict[e_entity_now.lower()], fill_opacity='0.2'))
             #chunk1
-            dwg_texts.append([e_chunk_now, (start_x, start_y ), '#546c77', '16', 'Monaco', 'font-weight:lighter'])
+            dwg_texts.append([e_chunk_now, (start_x, start_y ), '#546c74', '16', 'Monaco', 'font-weight:lighter'])
             #dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
             #                 font_family='Monaco', style='font-weight:lighter'))
             #entity 1
@@ -303,13 +303,14 @@ class RelationExtractionVisualizer:
             this_line += 1 
         dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, start_y+y_offset))
         
-        for ctext_ in dwg_texts:
-            dwg.add(dwg.text(ctext_[0], insert=ctext_[1], fill=ctext_[2], font_size=ctext_[3], 
-                             font_family=ctext_[4], style=ctext_[5]))
         for crect_ in dwg_rects:
             dwg.add(dwg.rect(insert=crect_[0],rx=2,ry=2, size=crect_[1], stroke=crect_[2], 
             stroke_width='1', fill=crect_[2], fill_opacity='0.2'))
-        
+            
+        for ctext_ in dwg_texts:
+            dwg.add(dwg.text(ctext_[0], insert=ctext_[1], fill=ctext_[2], font_size=ctext_[3], 
+                             font_family=ctext_[4], style=ctext_[5]))
+
         prev_text = selected_text[begin_index:]        
         for word_ in prev_text.split(' '):
             this_size = self.__size(word_)
