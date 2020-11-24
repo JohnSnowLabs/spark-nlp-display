@@ -9,8 +9,8 @@ import math
 from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
-overlap_hist = []
-y_hist_dict = {}
+#overlap_hist = []
+#y_hist_dict = {}
 x_i_diff_dict = {}
 x_o_diff_dict = {}
 class RelationExtractionVisualizer:
@@ -97,6 +97,7 @@ class RelationExtractionVisualizer:
             fy = (fullness1 * cy + by) / fullness2
 
             text_place_y = s_y-(abs(s_y-e_y)/2)
+            '''
             line = dwg.add(dwg.polyline(
                       [
                       (bx, by),    
@@ -105,7 +106,16 @@ class RelationExtractionVisualizer:
                       (ex, ey),
                       (bx, by)
                       ],
-                      stroke=color, stroke_width = "2", fill='none',))
+                      stroke=color, stroke_width = "1", fill='none',))
+            '''
+            line = dwg.add(dwg.polyline(
+                      [
+                      (dx, dy),
+                      (bx, by),    
+                      (ex, ey),
+                      (bx, by)
+                      ],
+                      stroke=color, stroke_width = "1", fill='none',))
             return text_place_y
         unique_o_index = str(s_x)+str(s_y)
         unique_i_index = str(e_x)+str(e_y)
@@ -136,15 +146,15 @@ class RelationExtractionVisualizer:
             else:
                 e_x -= 10
                 x_i_diff_dict[unique_i_index] = 5
-        this_y_vals = list(range(min(s_x,e_x), max(s_x,e_x)+1))
-        this_y_vals = [ str(s_y)+'|'+str(i) for i in this_y_vals]
-        common = set(this_y_vals) & set(overlap_hist)
-        overlap_hist.extend(this_y_vals)
-        if s_y not in y_hist_dict:
-            y_hist_dict[s_y] = 20
-        if common:
-            y_hist_dict[s_y] += 20
-        y_increase = y_hist_dict[s_y]
+        #this_y_vals = list(range(min(s_x,e_x), max(s_x,e_x)+1))
+        #this_y_vals = [ str(s_y)+'|'+str(i) for i in this_y_vals]
+        #common = set(this_y_vals) & set(overlap_hist)
+        #overlap_hist.extend(this_y_vals)
+        #if s_y not in y_hist_dict:
+        #    y_hist_dict[s_y] = 20
+        #if common:
+        #    y_hist_dict[s_y] += 20
+        #y_increase = y_hist_dict[s_y]
         if s_y == e_y:
             s_y -= 20
             e_y = s_y-4#55
@@ -155,7 +165,7 @@ class RelationExtractionVisualizer:
                                 [(s_x+e_x)/2.0, s_y-40],
                                 [e_x,e_y]]), 50)
             dwg.add(dwg.polyline(pth,
-                stroke=color, stroke_width = "2", fill='none',))
+                stroke=color, stroke_width = "1", fill='none',))
             draw_pointer(dwg, (s_x+e_x)/2.0, s_y-50, e_x, e_y)
         elif s_y >= e_y:
             e_y +=15
@@ -168,7 +178,7 @@ class RelationExtractionVisualizer:
                                 #[(s_x+(3*e_x))/4.0,(s_y+e_y)/2.0],
                                 [e_x,e_y]]), 50)
             dwg.add(dwg.polyline(pth,
-                stroke=color, stroke_width = "2", fill='none',))
+                stroke=color, stroke_width = "1", fill='none',))
             draw_pointer(dwg, s_x, s_y, e_x, e_y)
 
             '''
@@ -195,7 +205,7 @@ class RelationExtractionVisualizer:
                     (e_x-2, e_y),
                     (e_x, e_y)
                     ],
-                    stroke=color, stroke_width = "2", fill='none',))
+                    stroke=color, stroke_width = "1", fill='none',))
             draw_pointer(dwg, s_x, s_y, e_x, e_y)
             
         if show_relations:
@@ -205,7 +215,7 @@ class RelationExtractionVisualizer:
             rect_w, rect_h = (rel_temp_size+3,13)
             dwg.add(dwg.rect(insert=(rect_x, rect_y), rx=2,ry=2, 
             size=(rect_w, rect_h), 
-            fill='white', stroke=color , stroke_width='1', font_family='courier', 
+            fill='white', stroke=color , stroke_width='1', font_family='Monaco', 
             transform = f"rotate({angle} {rect_x+rect_w/2} {rect_y+rect_h/2})"))
 
             dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(rel_temp_size/2.0), text_place_y), 
@@ -222,7 +232,7 @@ class RelationExtractionVisualizer:
         start_y = 75
         x_limit = 920
         y_offset = 100
-        dwg = svgwrite.Drawing("temp.svg",profile='tiny', size = (x_limit, len(selected_text) * 1.1 + len(rdf)*20))
+        #dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, len(selected_text) * 1.1 + len(rdf)*20))
         
         begin_index = 0
         start_x = 10
@@ -249,6 +259,7 @@ class RelationExtractionVisualizer:
             #all_entities_1_index.append(t[4]['entity1_begin'])
         all_entities_index = np.asarray(list(all_entities_index))
         all_entities_index = all_entities_index[np.argsort(all_entities_index)]
+        dwg_rects, dwg_texts = [], []
         for ent_start_ind in all_entities_index:
             e_start_now, e_end_now, e_chunk_now, e_entity_now = basic_dict[ent_start_ind]
             prev_text = selected_text[begin_index:int(e_start_now)]
@@ -259,7 +270,9 @@ class RelationExtractionVisualizer:
                     start_y += y_offset
                     start_x = 10
                     this_line = 0
-                dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
+                dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', 'Monaco', 'font-weight:lighter'])
+                #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
+                #                 font_family='Monaco', style='font-weight:lighter'))
                 start_x += this_size + 10
                 
             this_size = self.__size(e_chunk_now)
@@ -269,22 +282,33 @@ class RelationExtractionVisualizer:
                     this_line = 0
                     
             #rectange chunk 1
-            dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=3,ry=3, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
-            stroke_width='2', fill='none'))
+            dwg_rects.append([(start_x-3, start_y-18), (this_size,25), self.entity_color_dict[e_entity_now.lower()]])
+            #dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=2,ry=2, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
+            #stroke_width='1', fill=self.entity_color_dict[e_entity_now.lower()], fill_opacity='0.2'))
             #chunk1
-            dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
+            dwg_texts.append([e_chunk_now, (start_x, start_y ), '#546c77', '16', 'Monaco', 'font-weight:lighter'])
+            #dwg.add(dwg.text(e_chunk_now, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
+            #                 font_family='Monaco', style='font-weight:lighter'))
             #entity 1
             central_point_x = start_x+(this_size/2)
             temp_size = self.__size(e_entity_now)/2.75
-            dwg.add(dwg.text(e_entity_now.upper(), 
-                            insert=(central_point_x-temp_size, start_y+20), 
-                            fill='mediumseagreen', font_size='12', font_family='courier'))
+            dwg_texts.append([e_entity_now.upper(), (central_point_x-temp_size, start_y+20), '#1f77b7', '12', 'Monaco', 'font-weight:lighter'])
+            #dwg.add(dwg.text(e_entity_now.upper(), 
+            #                insert=(central_point_x-temp_size, start_y+20), 
+            #                fill='#1f77b7', font_size='12', font_family='Monaco',
+            #                style='font-weight:lighter'))
             
             all_done[int(e_start_now)] = [central_point_x, start_y, temp_size]
             start_x += this_size + 20
             this_line += 1 
-              
-            #all_done[ent_start_ind] = 
+        dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, start_y+y_offset))
+        
+        for ctext_ in dwg_texts:
+            dwg.add(dwg.text(ctext_[0], insert=ctext_[1], fill=ctext_[2], font_size=ctext_[3], 
+                             font_family=ctext_[4], style=ctext_[5]))
+        for crect_ in dwg_rects:
+            dwg.add(dwg.rect(insert=crect_[0],rx=2,ry=2, size=crect_[1], stroke=crect_[2], 
+            stroke_width='1', fill=crect_[2], fill_opacity='0.2'))
         
         prev_text = selected_text[begin_index:]        
         for word_ in prev_text.split(' '):
@@ -292,7 +316,8 @@ class RelationExtractionVisualizer:
             if (start_x + this_size)>= x_limit:
                 start_y += y_offset
                 start_x = 10
-            dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='gray', font_size='16', font_family='courier'))
+            dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
+                             font_family='Monaco', style='font-weight:lighter'))
             start_x += this_size
 
         relation_distances = []
