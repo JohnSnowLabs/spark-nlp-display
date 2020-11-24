@@ -314,7 +314,7 @@ class RelationExtractionVisualizer:
             dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', self.main_font, 'font-weight:100'])
             #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
             #                 font_family='Monaco', style='font-weight:lighter'))
-            start_x += this_size
+            start_x += this_size + 10
         
         
         dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, start_y+y_offset))
