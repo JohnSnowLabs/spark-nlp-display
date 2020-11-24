@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import numpy as np
 import svgwrite
+from . import style_utils as style_config
 from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -18,16 +19,6 @@ class DependencyParserVisualizer:
         return ((len(text)+1)*15)-5
 
     def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color):
-      rx=ry=1
-      dwg.add(dwg.path(d=f"M{min(s_x,e_x)},{s_y} A {rx}, {ry}, 0 1 1 {max(s_x,e_x)}, {s_y}",
-      stroke=color, stroke_width = "3", fill='none'))
-      dwg.add(dwg.polyline(
-          [(e_x, s_y), (e_x+3, s_y),
-          (e_x, s_y+5),
-          (e_x-3, s_y),
-          (e_x, s_y)
-          ], stroke=color, stroke_width = "4", fill='none',))
-      '''
       line = dwg.add(dwg.polyline(
           [(s_x, s_y+4), 
           (s_x, e_y), 
@@ -39,7 +30,6 @@ class DependencyParserVisualizer:
           (e_x, s_y)
           ],
           stroke=color, stroke_width = "2", fill='none',))
-      '''
       dwg.add(dwg.text(d_type, insert=(((s_x+e_x)/2)-(self.__size(d_type.strip())/2.75), e_y-4), 
       fill=color, font_size='20', font_family='courier'))
 
