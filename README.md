@@ -27,6 +27,28 @@ pip install spark-nlp-display
 
 ### How to use
 
+### Databricks
+#### For all modules, pass in the additional parameter "return_html=True" in the display function and use Databrick's function displayHTML() to render visualization as explained below:
+```python
+from sparknlp_display import NerVisualizer
+
+ner_vis = NerVisualizer()
+
+## To set custom label colors:
+ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
+
+vis_html = ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
+                    label_col='entities', #specify the entity column
+                    document_col='document', #specify the document column (default: 'document')
+                    labels=['PER'], #only allow these labels to be displayed. (default: [] - all labels will be displayed)
+                    return_html=True)
+
+
+displayHTML(vis_html)
+```
+
+### Jupyter
+
 #### Dependency Parser
 ```python
 from sparknlp_display import DependencyParserVisualizer
