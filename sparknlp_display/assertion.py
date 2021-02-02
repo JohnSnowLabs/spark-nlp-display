@@ -36,7 +36,7 @@ class AssertionVisualizer:
             return self.label_colors[label.lower()]
         else:
             #update it to fetch from git new labels 
-            r = lambda: random.randint(100,255)
+            r = lambda: random.randint(0,200)
             return '#%02X%02X%02X' % (r(), r(), r())
 
     def set_label_colors(self, color_dict):
@@ -108,10 +108,15 @@ class AssertionVisualizer:
 
         if labels_list is not None:
             labels_list = [v.lower() for v in labels_list]
+            
+        assertion_temp_dict = {}
+        for resol in result[resolution_col]:
+            assertion_temp_dict[int(resol.begin)] = resol.result
+            
         label_color = {}
         html_output = ""
         pos = 0
-        for entity, resol in zip(result[label_col], result[resolution_col]):
+        for entity in result[label_col]:
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
                 label_color[entity_type] = self.__get_label(entity_type)
@@ -124,13 +129,22 @@ class AssertionVisualizer:
             pos = end+1
 
             if entity_type in label_color:
-                html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span></span>'.format(
-                    label_color[entity_type] + 'B3', #color
-                    entity.result, #entity - chunk
-                    entity.metadata['entity'], #entity - label
-                    label_color[entity_type] + 'FF', #color '#D2C8C6' 
-                    resol.result, # res_assertion
-                )
+                
+                if begin in assertion_temp_dict:
+                
+                    html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span></span>'.format(
+                        label_color[entity_type] + 'B3', #color
+                        entity.result, #entity - chunk
+                        entity.metadata['entity'], #entity - label
+                        label_color[entity_type] + 'FF', #color '#D2C8C6' 
+                        assertion_temp_dict[begin] # res_assertion
+                    )
+                else:
+                    html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span></span>'.format(
+                        label_color[entity_type] + 'B3', #color
+                        entity.result, #entity - chunk
+                        entity.metadata['entity'] #entity - label
+                    )
 
             else:
                 html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)
@@ -144,7 +158,7 @@ class AssertionVisualizer:
 
         return html_output
 
-    def display(self, result, label_col, assertion_col, document_col='document', raw_text=None):
+    def display(self, result, label_col, assertion_col, document_col='document', raw_text=None, return_html=False):
         """Displays Assertion visualization. 
 
         Inputs:
@@ -161,4 +175,8 @@ class AssertionVisualizer:
         
         html_content = self.__display_ner(result, label_col, assertion_col, document_col, raw_text)
         
-        return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
+        if return_html:
+            return style_config.STYLE_CONFIG_ENTITIES+ " "+html_content
+        else:
+            return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
+        

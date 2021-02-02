@@ -24,7 +24,7 @@ class RelationExtractionVisualizer:
             self.font_path = os.path.join(here, 'fonts/Lucida_Console.ttf')
             self.main_font = 'Lucida'
     def __get_color(self, l):
-        r = lambda: random.randint(100,255)
+        r = lambda: random.randint(0,200)
         return '#%02X%02X%02X' % (r(), r(), r())
 
     def __size(self, text):
@@ -353,8 +353,14 @@ class RelationExtractionVisualizer:
         
         return dwg.tostring()
 
-    def display(self, result, relation_col, document_col='document', show_relations=True):
+    def display(self, result, relation_col, document_col='document', show_relations=True, return_html=False):
 
         original_text = result[document_col][0].result
         res = result[relation_col]
-        return display(HTML(self.__gen_graph(res, original_text, show_relations)))
+        
+        html_content = self.__gen_graph(res, original_text, show_relations)
+        
+        if return_html:
+            return html_content
+        else:
+            return display(HTML(html_content))

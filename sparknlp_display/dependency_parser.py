@@ -12,7 +12,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 class DependencyParserVisualizer:
 
     def __get_color(self, l):
-        r = lambda: random.randint(100,255)
+        r = lambda: random.randint(0,200)
         return '#%02X%02X%02X' % (r(), r(), r())
 
     def __size(self, text):
@@ -193,7 +193,7 @@ class DependencyParserVisualizer:
         return dwg.tostring()
 
 
-    def display(self, res, pos_col, dependency_col, dependency_type_col):
+    def display(self, res, pos_col, dependency_col, dependency_type_col, return_html=False):
         """Displays NER visualization. 
 
         Inputs:
@@ -226,6 +226,10 @@ class DependencyParserVisualizer:
         for i in res[dependency_type_col]:
             dept_res.append(i.result)
         df['dependency_type'] = dept_res
-
-        return display(HTML(self.__generate_graph(df)))
-
+        
+        html_content = self.__generate_graph(df)
+        if return_html:
+            return html_content
+        else:
+            return display(HTML(html_content))
+        

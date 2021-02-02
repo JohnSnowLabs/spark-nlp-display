@@ -36,7 +36,7 @@ class EntityResolverVisualizer:
             return self.label_colors[label.lower()]
         else:
             #update it to fetch from git new labels 
-            r = lambda: random.randint(100,255)
+            r = lambda: random.randint(0,200)
             return '#%02X%02X%02X' % (r(), r(), r())
 
     def set_label_colors(self, color_dict):
@@ -146,7 +146,7 @@ class EntityResolverVisualizer:
 
         return html_output
 
-    def display(self, result, label_col, resolution_col, document_col='document', raw_text=None):
+    def display(self, result, label_col, resolution_col, document_col='document', raw_text=None, return_html=False):
         """Displays NER visualization. 
 
         Inputs:
@@ -163,4 +163,7 @@ class EntityResolverVisualizer:
         
         html_content = self.__display_ner(result, label_col, resolution_col, document_col, raw_text)
         
-        return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
+        if return_html:
+            return style_config.STYLE_CONFIG_ENTITIES+ " "+html_content
+        else:
+            return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
