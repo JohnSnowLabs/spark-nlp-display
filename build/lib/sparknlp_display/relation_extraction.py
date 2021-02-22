@@ -24,7 +24,7 @@ class RelationExtractionVisualizer:
             self.font_path = os.path.join(here, 'fonts/Lucida_Console.ttf')
             self.main_font = 'Lucida'
     def __get_color(self, l):
-        r = lambda: random.randint(0,200)
+        r = lambda: random.randint(125,255)
         return '#%02X%02X%02X' % (r(), r(), r())
 
     def __size(self, text):
@@ -257,6 +257,11 @@ class RelationExtractionVisualizer:
                                                 t.metadata['entity2_end'],
                                                 t.metadata['chunk2'], 
                                                 t.metadata['entity2']]
+            if t.metadata['entity1'].lower().strip() not in self.entity_color_dict:
+                self.entity_color_dict[t.metadata['entity1'].lower().strip()] = self.__get_color(t.metadata['entity1'].lower().strip())
+            if t.metadata['entity2'].lower().strip() not in self.entity_color_dict:
+                self.entity_color_dict[t.metadata['entity2'].lower().strip()] = self.__get_color(t.metadata['entity2'].lower().strip())  
+             
         
             #all_entities_1_index.append(t[4]['entity1_begin'])
         all_entities_index = np.asarray(list(all_entities_index))
@@ -284,7 +289,7 @@ class RelationExtractionVisualizer:
                     this_line = 0
                     
             #rectange chunk 1
-            dwg_rects.append([(start_x-3, start_y-18), (this_size,25), self.entity_color_dict[e_entity_now.lower()]])
+            dwg_rects.append([(start_x-3, start_y-18), (this_size,25), self.entity_color_dict[e_entity_now.lower().strip()]])
             #dwg.add(dwg.rect(insert=(start_x-3, start_y-18),rx=2,ry=2, size=(this_size,25), stroke=self.entity_color_dict[e_entity_now.lower()], 
             #stroke_width='1', fill=self.entity_color_dict[e_entity_now.lower()], fill_opacity='0.2'))
             #chunk1
@@ -334,6 +339,7 @@ class RelationExtractionVisualizer:
         for row in rdf:
             if row.result.lower().strip() not in self.color_dict:
                 self.color_dict[row.result.lower().strip()] = self.__get_color(row.result.lower().strip())
+            
             d_key2 = all_done[int(row.metadata['entity2_begin'])]
             d_key1 = all_done[int(row.metadata['entity1_begin'])]
             this_dist = abs(d_key2[0] - d_key1[0]) + abs (d_key2[1]-d_key1[1])

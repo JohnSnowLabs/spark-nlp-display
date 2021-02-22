@@ -57,7 +57,7 @@ STYLE_CONFIG_ENTITIES = f"""
         font-weight: 500;
 
         display: block;
-        padding: 1px 5px;
+        padding: 3px 5px;
     }}
     
     .spark-nlp-display-entity-resolution{{
@@ -71,7 +71,7 @@ STYLE_CONFIG_ENTITIES = f"""
         font-weight: 500;
 
         display: block;
-        padding: 1px 5px;
+        padding: 3px 5px;
     }}
     
     .spark-nlp-display-others{{

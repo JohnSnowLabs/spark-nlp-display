@@ -108,10 +108,16 @@ class EntityResolverVisualizer:
 
         if labels_list is not None:
             labels_list = [v.lower() for v in labels_list]
+            
+        resolution_temp_dict = {}
+        for resol in result[resolution_col]:
+            resolution_temp_dict[int(resol.begin)] = [resol.result, resol.metadata['resolved_text']]
+            
+            
         label_color = {}
         html_output = ""
         pos = 0
-        for entity, resol in zip(result[label_col], result[resolution_col]):
+        for entity in result[label_col]:
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
                 label_color[entity_type] = self.__get_label(entity_type)
@@ -124,16 +130,22 @@ class EntityResolverVisualizer:
             pos = end+1
 
             if entity_type in label_color:
-                html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{}</span></span>'.format(
-                    label_color[entity_type] + 'B3', #color
-                    entity.result, #entity - chunk
-                    entity.metadata['entity'], #entity - label
-                    label_color[entity_type] + 'FF', #color '#D2C8C6' 
-                    resol.result, # res_code
-                    label_color[entity_type] + 'CC', # res_color '#DDD2D0'
-                    resol.metadata['resolved_text'] # res_text
-                )
-
+                if begin in resolution_temp_dict:
+                    html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{}</span></span>'.format(
+                        label_color[entity_type] + 'B3', #color
+                        entity.result, #entity - chunk
+                        entity.metadata['entity'], #entity - label
+                        label_color[entity_type] + 'FF', #color '#D2C8C6' 
+                        resolution_temp_dict[begin][0], # res_code
+                        label_color[entity_type] + 'CC', # res_color '#DDD2D0'
+                        resolution_temp_dict[begin][1] # res_text
+                    )
+                else:
+                    html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span></span>'.format(
+                        label_color[entity_type] + 'B3', #color
+                        entity.result, #entity - chunk
+                        entity.metadata['entity'] #entity - label
+                    )
             else:
                 html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)
 
