@@ -31,6 +31,7 @@ class RelationExtractionVisualizer:
         return ((len(text)+1)*9.7)-5
 
     def __draw_line(self, dwg, s_x , s_y, e_x, e_y, d_type, color, show_relations, size_of_entity_label):
+        eps = 0.0000001
         def get_bezier_coef(points):
             # since the formulas work given that we have n+1 points
             # then n must be this:
@@ -87,7 +88,7 @@ class RelationExtractionVisualizer:
             ay = s_y
             abx = bx - ax
             aby = by - ay
-            ab = np.sqrt(abx * abx + aby * aby)
+            ab = np.sqrt(abx * abx + aby * aby) + eps
 
             cx = bx - size * abx / ab
             cy = by - size * aby / ab
@@ -157,7 +158,9 @@ class RelationExtractionVisualizer:
         #if common:
         #    y_hist_dict[s_y] += 20
         #y_increase = y_hist_dict[s_y]
+        angle = -1
         if s_y == e_y:
+            angle = 0
             s_y -= 20
             e_y = s_y-4#55
             
@@ -211,7 +214,7 @@ class RelationExtractionVisualizer:
             draw_pointer(dwg, s_x, s_y, e_x, e_y)
             
         if show_relations:
-            angle = math.degrees(math.atan((s_y-e_y)/(s_x-e_x)))
+            if angle == -1: angle = math.degrees(math.atan((s_y-e_y)/((s_x-e_x)+eps)))
             rel_temp_size = self.__size(d_type)/1.35
             rect_x, rect_y = (((s_x+e_x)/2.0)-(rel_temp_size/2.0)-3, text_place_y-10)
             rect_w, rect_h = (rel_temp_size+3,13)
@@ -224,8 +227,9 @@ class RelationExtractionVisualizer:
             fill=color, font_size='12', font_family='courier',
             transform = f"rotate({angle} {rect_x+rect_w/2} {rect_y+rect_h/2})"))
 
-    def __gen_graph(self, rdf, selected_text, show_relations):
-        rdf = [ i for i in rdf if i.result.lower().strip()!='o']
+    def __gen_graph(self, rdf, selected_text, exclude_relations, show_relations):
+        exclude_relations = [ i.lower().strip() for i in exclude_relations]
+        rdf = [ i for i in rdf if i.result.lower().strip() not in exclude_relations]
 
         done_ent1 = {}
         done_ent2 = {}
@@ -359,12 +363,12 @@ class RelationExtractionVisualizer:
         
         return dwg.tostring()
 
-    def display(self, result, relation_col, document_col='document', show_relations=True, return_html=False):
+    def display(self, result, relation_col, document_col='document', exclude_relations=['O'], show_relations=True, return_html=False):
 
         original_text = result[document_col][0].result
         res = result[relation_col]
         
-        html_content = self.__gen_graph(res, original_text, show_relations)
+        html_content = self.__gen_graph(res, original_text, exclude_relations, show_relations)
         
         if return_html:
             return html_content

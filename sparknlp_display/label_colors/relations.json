@@ -17,5 +17,8 @@
     "drug-form" : "deepskyblue",
     "dosage-drug" : "springgreen",
     "strength-drug": "maroon",
-    "drug-dosage" : "gold"
+    "drug-dosage" : "gold",
+    
+    "0" : "#e4815e",
+    "1" : "d46992"
 }
