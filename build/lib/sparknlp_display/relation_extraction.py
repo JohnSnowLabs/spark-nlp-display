@@ -24,7 +24,7 @@ class RelationExtractionVisualizer:
             self.font_path = os.path.join(here, 'fonts/Lucida_Console.ttf')
             self.main_font = 'Lucida'
     def __get_color(self, l):
-        r = lambda: random.randint(125,255)
+        r = lambda: random.randint(0,200)
         return '#%02X%02X%02X' % (r(), r(), r())
 
     def __size(self, text):
@@ -364,6 +364,16 @@ class RelationExtractionVisualizer:
         return dwg.tostring()
 
     def display(self, result, relation_col, document_col='document', exclude_relations=['O'], show_relations=True, return_html=False):
+        """Displays Relation Extraction visualization. 
+        Inputs:
+        result -- A Dataframe or dictionary.
+        relation_col -- Name of the column/key containing relationships.
+        document_col -- Name of the column/key containing text document.
+        exclude_relations -- list of relations that don't need to be displayed. Default: ["O"]
+        show_relations -- Display relation types on arrows. Default: True
+        return_html -- If true, returns raw html code instead of displaying. Default: False
+        Output: Visualization
+        """
 
         original_text = result[document_col][0].result
         res = result[relation_col]
