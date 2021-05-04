@@ -31,7 +31,7 @@ class DependencyParserVisualizer:
           (e_x-2, s_y),
           (e_x, s_y)
           ],
-          stroke='black', stroke_width = "1", fill='none',))
+          stroke='black', stroke_width = "2", fill='none',))
         
         #if e_x > s_x:
         rad=10
