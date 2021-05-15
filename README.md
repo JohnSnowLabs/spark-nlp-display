@@ -37,15 +37,18 @@ ner_vis = NerVisualizer()
 ## To set custom label colors:
 ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
 
+pipeline_result = ner_light_pipeline.fullAnnotate(text) ##light pipeline
+#pipeline_result = ner_full_pipeline.transform(df).collect()##full pipeline
+
 vis_html = ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                     label_col='entities', #specify the entity column
                     document_col='document', #specify the document column (default: 'document')
                     labels=['PER'], #only allow these labels to be displayed. (default: [] - all labels will be displayed)
                     return_html=True)
 
-
 displayHTML(vis_html)
 ```
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/ner_viz.png)
 
 ### Jupyter
 
@@ -55,6 +58,9 @@ from sparknlp_display import DependencyParserVisualizer
 
 dependency_vis = DependencyParserVisualizer()
 
+pipeline_result = dp_pipeline.fullAnnotate(text)
+#pipeline_result = dp_full_pipeline.transform(df).collect()##full pipeline
+
 dependency_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe.
                        pos_col = 'pos', #specify the pos column
                        dependency_col = 'dependency', #specify the dependency column
@@ -62,12 +68,17 @@ dependency_vis.display(pipeline_result[0], #should be the results of a single ex
                        )
 ```
 
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/dp_viz.png)
+
 #### Named Entity Recognition
 
 ```python
 from sparknlp_display import NerVisualizer
 
 ner_vis = NerVisualizer()
+
+pipeline_result = ner_light_pipeline.fullAnnotate(text)
+#pipeline_result = ner_full_pipeline.transform(df).collect()##full pipeline
 
 ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                     label_col='entities', #specify the entity column
@@ -80,12 +91,16 @@ ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors b
 
 ```
 
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/ner_viz.png)
+
 #### Entity Resolution
 
 ```python
 from sparknlp_display import EntityResolverVisualizer
 
 er_vis = EntityResolverVisualizer()
+
+pipeline_result = er_light_pipeline.fullAnnotate(text)
 
 er_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                label_col='entities', #specify the ner result column
@@ -98,12 +113,15 @@ er_vis.set_label_colors({'TREATMENT':'#800080', 'PROBLEM':'#77b5fe'}) #set label
 
 ```
 
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/er_viz.png)
 
 #### Relation Extraction
 ```python
 from sparknlp_display import RelationExtractionVisualizer
 
 re_vis = RelationExtractionVisualizer()
+
+pipeline_result = re_light_pipeline.fullAnnotate(text)
 
 re_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                relation_col = 'relations', #specify relations column
@@ -113,11 +131,15 @@ re_vis.display(pipeline_result[0], #should be the results of a single example, n
 
 ```
 
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/re_viz.png)
+
 #### Assertion Status
 ```python
 from sparknlp_display import AssertionVisualizer
 
 assertion_vis = AssertionVisualizer()
+
+pipeline_result = ner_assertion_light_pipeline.fullAnnotate(text)
 
 assertion_vis.display(pipeline_result[0], 
                       label_col = 'entities', #specify the ner result column
@@ -130,3 +152,4 @@ assertion_vis.set_label_colors({'TREATMENT':'#008080', 'problem':'#800080'}) #se
 
 ```
 
+![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/assertion_viz.png)
