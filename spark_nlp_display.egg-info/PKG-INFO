@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: spark-nlp-display
-Version: 1.7
+Version: 1.8
 Summary: Visualization package for Spark NLP
 Home-page: http://nlp.johnsnowlabs.com
 Author: John Snow Labs
@@ -45,15 +45,18 @@ Description: # spark-nlp-display
         ## To set custom label colors:
         ner_vis.set_label_colors({'LOC':'#800080', 'PER':'#77b5fe'}) #set label colors by specifying hex codes
         
+        pipeline_result = ner_light_pipeline.fullAnnotate(text) ##light pipeline
+        #pipeline_result = ner_full_pipeline.transform(df).collect()##full pipeline
+        
         vis_html = ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                             label_col='entities', #specify the entity column
                             document_col='document', #specify the document column (default: 'document')
                             labels=['PER'], #only allow these labels to be displayed. (default: [] - all labels will be displayed)
                             return_html=True)
         
-        
         displayHTML(vis_html)
         ```
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/ner_viz.png)
         
         ### Jupyter
         
@@ -63,6 +66,9 @@ Description: # spark-nlp-display
         
         dependency_vis = DependencyParserVisualizer()
         
+        pipeline_result = dp_pipeline.fullAnnotate(text)
+        #pipeline_result = dp_full_pipeline.transform(df).collect()##full pipeline
+        
         dependency_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe.
                                pos_col = 'pos', #specify the pos column
                                dependency_col = 'dependency', #specify the dependency column
@@ -70,12 +76,17 @@ Description: # spark-nlp-display
                                )
         ```
         
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/dp_viz.png)
+        
         #### Named Entity Recognition
         
         ```python
         from sparknlp_display import NerVisualizer
         
         ner_vis = NerVisualizer()
+        
+        pipeline_result = ner_light_pipeline.fullAnnotate(text)
+        #pipeline_result = ner_full_pipeline.transform(df).collect()##full pipeline
         
         ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                             label_col='entities', #specify the entity column
@@ -88,12 +99,16 @@ Description: # spark-nlp-display
         
         ```
         
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/ner_viz.png)
+        
         #### Entity Resolution
         
         ```python
         from sparknlp_display import EntityResolverVisualizer
         
         er_vis = EntityResolverVisualizer()
+        
+        pipeline_result = er_light_pipeline.fullAnnotate(text)
         
         er_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                        label_col='entities', #specify the ner result column
@@ -106,12 +121,15 @@ Description: # spark-nlp-display
         
         ```
         
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/er_viz.png)
         
         #### Relation Extraction
         ```python
         from sparknlp_display import RelationExtractionVisualizer
         
         re_vis = RelationExtractionVisualizer()
+        
+        pipeline_result = re_light_pipeline.fullAnnotate(text)
         
         re_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                        relation_col = 'relations', #specify relations column
@@ -121,11 +139,15 @@ Description: # spark-nlp-display
         
         ```
         
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/re_viz.png)
+        
         #### Assertion Status
         ```python
         from sparknlp_display import AssertionVisualizer
         
         assertion_vis = AssertionVisualizer()
+        
+        pipeline_result = ner_assertion_light_pipeline.fullAnnotate(text)
         
         assertion_vis.display(pipeline_result[0], 
                               label_col = 'entities', #specify the ner result column
@@ -138,6 +160,7 @@ Description: # spark-nlp-display
         
         ```
         
+        ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/assertion_viz.png)
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
