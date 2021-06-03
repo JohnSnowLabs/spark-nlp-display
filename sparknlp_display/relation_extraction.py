@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import svgwrite
 import math
+import re
 from IPython.display import display, HTML
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -236,7 +237,7 @@ class RelationExtractionVisualizer:
         all_done = {}
         
         start_y = 75
-        x_limit = 920
+        x_limit = 1000
         y_offset = 100
         #dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, len(selected_text) * 1.1 + len(rdf)*20))
         
@@ -274,17 +275,23 @@ class RelationExtractionVisualizer:
         for ent_start_ind in all_entities_index:
             e_start_now, e_end_now, e_chunk_now, e_entity_now = basic_dict[ent_start_ind]
             prev_text = selected_text[begin_index:int(e_start_now)]
+            prev_text = re.sub(r'\s*(\n)+', r'\1', prev_text.strip(), re.MULTILINE)
             begin_index = int(e_end_now)+1
-            for word_ in prev_text.split(' '):
-                this_size = self.__size(word_)
-                if (start_x + this_size + 10) >= x_limit:
+            for line_num, line in enumerate(prev_text.split('\n')):
+                if line_num != 0:
                     start_y += y_offset
                     start_x = 10
                     this_line = 0
-                dwg_texts.append([word_, (start_x, start_y ), '#546c74', '16', self.main_font, 'font-weight:100'])
-                #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
-                #                 font_family='Monaco', style='font-weight:lighter'))
-                start_x += this_size + 10
+                for word_ in line.split(' '):
+                    this_size = self.__size(word_)
+                    if (start_x + this_size + 10) >= x_limit:
+                        start_y += y_offset
+                        start_x = 10
+                        this_line = 0
+                    dwg_texts.append([word_, (start_x, start_y ), '#546c74', '16', self.main_font, 'font-weight:100'])
+                    #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
+                    #                 font_family='Monaco', style='font-weight:lighter'))
+                    start_x += this_size + 10
                 
             this_size = self.__size(e_chunk_now)
             if (start_x + this_size + 10)>= x_limit:# or this_line >= 2:
@@ -314,17 +321,22 @@ class RelationExtractionVisualizer:
             this_line += 1 
         
 
-        prev_text = selected_text[begin_index:]        
-        for word_ in prev_text.split(' '):
-            this_size = self.__size(word_)
-            if (start_x + this_size)>= x_limit:
+        prev_text = selected_text[begin_index:]
+        prev_text = re.sub(r'\s*(\n)+', r'\1', prev_text.strip(), re.MULTILINE)
+        for line_num, line in enumerate(prev_text.split('\n')):
+            if line_num != 0:
                 start_y += y_offset
                 start_x = 10
-            dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', self.main_font, 'font-weight:100'])
-            #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
-            #                 font_family='Monaco', style='font-weight:lighter'))
-            start_x += this_size + 10
-        
+            for word_ in line.split(' '):
+                this_size = self.__size(word_)
+                if (start_x + this_size)>= x_limit:
+                    start_y += y_offset
+                    start_x = 10
+                dwg_texts.append([word_, (start_x, start_y ), '#546c77', '16', self.main_font, 'font-weight:100'])
+                #dwg.add(dwg.text(word_, insert=(start_x, start_y ), fill='#546c77', font_size='16', 
+                #                 font_family='Monaco', style='font-weight:lighter'))
+                start_x += this_size + 10
+            
         
         dwg = svgwrite.Drawing("temp.svg",profile='full', size = (x_limit, start_y+y_offset))
         dwg.embed_font(self.main_font, self.font_path)
