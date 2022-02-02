@@ -219,7 +219,7 @@ class DependencyParserVisualizer:
         return dwg.tostring()
 
 
-    def display(self, res, pos_col, dependency_col, dependency_type_col=None, return_html=False):
+    def display(self, res, pos_col, dependency_col, dependency_type_col=None, return_html=False, save_path=None):
         """Displays NER visualization. 
 
         Inputs:
@@ -254,6 +254,11 @@ class DependencyParserVisualizer:
             df['dependency_type'] = ''
         
         html_content = self.__generate_graph(df)
+        
+        if save_path != None:
+            with open(save_path, 'w') as f_:
+                f_.write(html_content)
+        
         if return_html:
             return html_content
         else:

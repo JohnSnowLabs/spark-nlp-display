@@ -158,7 +158,7 @@ class EntityResolverVisualizer:
 
         return html_output
 
-    def display(self, result, label_col, resolution_col, document_col='document', raw_text=None, return_html=False):
+    def display(self, result, label_col, resolution_col, document_col='document', raw_text=None, return_html=False, save_path=None):
         """Displays NER visualization. 
 
         Inputs:
@@ -175,7 +175,13 @@ class EntityResolverVisualizer:
         
         html_content = self.__display_ner(result, label_col, resolution_col, document_col, raw_text)
         
+        html_content_save = style_config.STYLE_CONFIG_ENTITIES+ " "+html_content
+        
+        if save_path != None:
+            with open(save_path, 'w') as f_:
+                f_.write(html_content_save)
+        
         if return_html:
-            return style_config.STYLE_CONFIG_ENTITIES+ " "+html_content
+            return 
         else:
-            return display(HTML(style_config.STYLE_CONFIG_ENTITIES+ " "+html_content))
+            return display(HTML(html_content_save))

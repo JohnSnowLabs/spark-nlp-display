@@ -375,7 +375,7 @@ class RelationExtractionVisualizer:
         
         return dwg.tostring()
 
-    def display(self, result, relation_col, document_col='document', exclude_relations=['O'], show_relations=True, return_html=False):
+    def display(self, result, relation_col, document_col='document', exclude_relations=['O'], show_relations=True, return_html=False, save_path=None):
         """Displays Relation Extraction visualization. 
         Inputs:
         result -- A Dataframe or dictionary.
@@ -391,6 +391,10 @@ class RelationExtractionVisualizer:
         res = result[relation_col]
         
         html_content = self.__gen_graph(res, original_text, exclude_relations, show_relations)
+        
+        if save_path != None:
+            with open(save_path, 'w') as f_:
+                f_.write(html_content)
         
         if return_html:
             return html_content

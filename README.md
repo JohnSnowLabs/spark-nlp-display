@@ -52,6 +52,9 @@ displayHTML(vis_html)
 
 ### Jupyter
 
+To save the visualization as html, provide the export file path: `save_path='./export.html'` for each visualizer.
+
+
 #### Dependency Parser
 ```python
 from sparknlp_display import DependencyParserVisualizer
@@ -64,7 +67,8 @@ pipeline_result = dp_pipeline.fullAnnotate(text)
 dependency_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe.
                        pos_col = 'pos', #specify the pos column
                        dependency_col = 'dependency', #specify the dependency column
-                       dependency_type_col = 'dependency_type' #specify the dependency type column
+                       dependency_type_col = 'dependency_type', #specify the dependency type column
+                       save_path='./export.html' # optional - to save viz as html. (default: None)
                        )
 ```
 
@@ -82,8 +86,9 @@ pipeline_result = ner_light_pipeline.fullAnnotate(text)
 
 ner_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                     label_col='entities', #specify the entity column
-                    document_col='document' #specify the document column (default: 'document')
-                    labels=['PER'] #only allow these labels to be displayed. (default: [] - all labels will be displayed)
+                    document_col='document', #specify the document column (default: 'document')
+                    labels=['PER'], #only allow these labels to be displayed. (default: [] - all labels will be displayed)
+                    save_path='./export.html' # optional - to save viz as html. (default: None)
                     )
 
 ## To set custom label colors:
@@ -104,8 +109,9 @@ pipeline_result = er_light_pipeline.fullAnnotate(text)
 
 er_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                label_col='entities', #specify the ner result column
-               resolution_col = 'resolution'
-               document_col='document' #specify the document column (default: 'document')
+               resolution_col = 'resolution',
+               document_col='document', #specify the document column (default: 'document')
+               save_path='./export.html' # optional - to save viz as html. (default: None)
                )
 
 ## To set custom label colors:
@@ -126,7 +132,8 @@ pipeline_result = re_light_pipeline.fullAnnotate(text)
 re_vis.display(pipeline_result[0], #should be the results of a single example, not the complete dataframe
                relation_col = 'relations', #specify relations column
                document_col = 'document', #specify document column
-               show_relations=True #display relation names on arrows (default: True)
+               show_relations=True, #display relation names on arrows (default: True)
+               save_path='./export.html' # optional - to save viz as html. (default: None)
                )
 
 ```
@@ -143,8 +150,9 @@ pipeline_result = ner_assertion_light_pipeline.fullAnnotate(text)
 
 assertion_vis.display(pipeline_result[0], 
                       label_col = 'entities', #specify the ner result column
-                      assertion_col = 'assertion' #specify assertion column
-                      document_col = 'document' #specify the document column (default: 'document')
+                      assertion_col = 'assertion', #specify assertion column
+                      document_col = 'document', #specify the document column (default: 'document')
+                      save_path='./export.html' # optional - to save viz as html. (default: None)
                       )
                       
 ## To set custom label colors:
