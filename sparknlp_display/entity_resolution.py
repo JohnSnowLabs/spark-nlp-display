@@ -182,6 +182,6 @@ class EntityResolverVisualizer:
                 f_.write(html_content_save)
         
         if return_html:
-            return 
+            return html_content_save
         else:
             return display(HTML(html_content_save))
