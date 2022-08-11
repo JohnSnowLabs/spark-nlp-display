@@ -134,7 +134,7 @@ class AssertionVisualizer:
                 
                     html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span><span class="spark-nlp-display-entity-resolution" style="background-color: {}">{} </span></span>'.format(
                         label_color[entity_type] + 'B3', #color
-                        entity.result, #entity - chunk
+                        original_text[begin:end+1],#entity.result,
                         entity.metadata['entity'], #entity - label
                         label_color[entity_type] + 'FF', #color '#D2C8C6' 
                         assertion_temp_dict[begin] # res_assertion
@@ -142,12 +142,12 @@ class AssertionVisualizer:
                 else:
                     html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span></span>'.format(
                         label_color[entity_type] + 'B3', #color
-                        entity.result, #entity - chunk
+                        original_text[begin:end+1],#entity.result,
                         entity.metadata['entity'] #entity - label
                     )
 
             else:
-                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)
+                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(original_text[begin:end+1])
 
         if pos < len(original_text):
             html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(original_text[pos:])

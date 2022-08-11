@@ -124,10 +124,10 @@ class NerVisualizer:
             if entity_type in label_color:
                 html_output += '<span class="spark-nlp-display-entity-wrapper" style="background-color: {}"><span class="spark-nlp-display-entity-name">{} </span><span class="spark-nlp-display-entity-type">{}</span></span>'.format(
                     label_color[entity_type],
-                    entity.result,
+                    original_text[begin:end+1],#entity.result,
                     entity.metadata['entity'])
             else:
-                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(entity.result)
+                html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(original_text[begin:end+1])
 
         if pos < len(original_text):
             html_output += '<span class="spark-nlp-display-others" style="background-color: white">{}</span>'.format(original_text[pos:])
