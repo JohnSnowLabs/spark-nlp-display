@@ -356,8 +356,8 @@ class RelationExtractionVisualizer:
             if row.result.lower().strip() not in self.color_dict:
                 self.color_dict[row.result.lower().strip()] = self.__get_color(row.result.lower().strip())
             
-            d_key2 = all_done[int(row.metadata['entity2_begin'])]
-            d_key1 = all_done[int(row.metadata['entity1_begin'])]
+            d_key2 = all_done[int(row.metadata['entity1_begin'])]
+            d_key1 = all_done[int(row.metadata['entity2_begin'])]
             this_dist = abs(d_key2[0] - d_key1[0]) + abs (d_key2[1]-d_key1[1])
             relation_distances.append(this_dist)
             relation_coordinates.append((d_key2, d_key1, row.result))
