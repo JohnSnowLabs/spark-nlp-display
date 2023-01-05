@@ -131,7 +131,9 @@ class RelationExtractionVisualizer:
                 x_o_diff_dict[unique_o_index] = 5
             if s_y > e_y:
                 e_x += size_of_entity_label
-            
+            elif s_y < e_y:
+                s_x -= size_of_entity_label
+                
             if unique_i_index in x_i_diff_dict:
                 e_x += 5
             else:
@@ -145,6 +147,9 @@ class RelationExtractionVisualizer:
                 x_o_diff_dict[unique_o_index] = 5
             if s_y > e_y:
                 e_x -= size_of_entity_label
+            elif s_y < e_y:
+                s_x += size_of_entity_label
+                
             if unique_i_index in x_i_diff_dict:
                 e_x -= 5
             else:
@@ -174,6 +179,7 @@ class RelationExtractionVisualizer:
                 stroke=color, stroke_width = "1", fill='none',))
             draw_pointer(dwg, (s_x+e_x)/2.0, s_y-50, e_x, e_y)
         elif s_y >= e_y:
+            
             e_y +=15
             s_y-=20
             text_place_y = s_y-(abs(s_y-e_y)/2)
@@ -199,19 +205,18 @@ class RelationExtractionVisualizer:
                     stroke=color, stroke_width = "2", fill='none',))
             '''
         else:
-            s_y-=5
-            e_y -= 40
+            
+            s_y+=15
+            e_y -= 20
             text_place_y = s_y+(abs(s_y-e_y)/2)
             
-            line = dwg.add(dwg.polyline(
-                    [(s_x, s_y),
-                    (e_x, e_y-40),    
-                    (e_x+2, e_y),
-                    (e_x, e_y+4),
-                    (e_x-2, e_y),
-                    (e_x, e_y)
-                    ],
-                    stroke=color, stroke_width = "1", fill='none',))
+            pth = evaluate_bezier(np.array([[s_x, s_y],
+                                #[((3*s_x)+e_x)/4.0, (s_y+e_y)/2.0],
+                                [(s_x+e_x)/2.0, (s_y+e_y)/2.0],
+                                #[(s_x+(3*e_x))/4.0,(s_y+e_y)/2.0],
+                                [e_x,e_y]]), 50)
+            dwg.add(dwg.polyline(pth,
+                stroke=color, stroke_width = "1", fill='none',))
             draw_pointer(dwg, s_x, s_y, e_x, e_y)
             
         if show_relations:
