@@ -1,6 +1,7 @@
 import random
 import os
 import json
+import numpy as np
 from . import style_utils as style_config
 from IPython.display import display, HTML
 
@@ -116,7 +117,11 @@ class AssertionVisualizer:
         label_color = {}
         html_output = ""
         pos = 0
-        for entity in result[label_col]:
+        
+        sorted_labs_idx = np.argsort([ int(i.begin) for i in result[label_col]])
+        sorted_labs = [ result[label_col][i] for i in sorted_labs_idx]
+        
+        for entity in sorted_labs:
             entity_type = entity.metadata['entity'].lower()
             if (entity_type not in label_color) and ((labels_list is None) or (entity_type in labels_list)) :
                 label_color[entity_type] = self.__get_label(entity_type)
