@@ -1,12 +1,10 @@
 Metadata-Version: 2.1
 Name: spark-nlp-display
-Version: 4.4
+Version: 5.0
 Summary: Visualization package for Spark NLP
 Home-page: http://nlp.johnsnowlabs.com
 Author: John Snow Labs
 Author-email: john@johnsnowlabs.com
-License: UNKNOWN
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 2
 Classifier: License :: OSI Approved :: Apache Software License
@@ -178,5 +176,3 @@ assertion_vis.set_label_colors({'TREATMENT':'#008080', 'problem':'#800080'}) #se
 ```
 
 ![title](https://raw.githubusercontent.com/JohnSnowLabs/spark-nlp-display/main/assets/assertion_viz.png)
-
-

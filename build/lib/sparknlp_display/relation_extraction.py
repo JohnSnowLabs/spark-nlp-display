@@ -368,7 +368,7 @@ class RelationExtractionVisualizer:
             relation_coordinates.append((d_key2, d_key1, row.result))
         
         relation_distances = np.array(relation_distances)
-        relation_coordinates = np.array(relation_coordinates)
+        relation_coordinates = np.array(relation_coordinates, dtype=object)
         temp_ind = np.argsort(relation_distances)
         relation_distances = relation_distances[temp_ind]
         relation_coordinates = relation_coordinates[temp_ind]
